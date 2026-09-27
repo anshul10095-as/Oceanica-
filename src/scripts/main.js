@@ -52,11 +52,26 @@
     const saveData = conn.saveData || /(^|-)2g$/.test(conn.effectiveType || '');
     if (!reduceMotion && !saveData) {
       const small = matchMedia('(max-width: 900px)').matches;
-      const ext = video.canPlayType('video/webm; codecs="vp9"') ? 'webm' : 'mp4';
-      video.src = `${small ? video.dataset.srcSm : video.dataset.srcLg}.${ext}`;
+      // H.264 MP4 plays in every mainstream browser, Safari and iOS included. WebM is
+      // only a fallback for builds without H.264: Safari often answers "maybe" for VP9
+      // WebM and then fails to play it, so it must never be the first choice.
+      const ext = video.canPlayType('video/mp4; codecs="avc1.640028"') ? 'mp4' : 'webm';
+      // iOS autoplays only videos that are muted and inline before a source is set.
       video.muted = true;
+      video.defaultMuted = true;
+      video.playsInline = true;
+      video.setAttribute('muted', '');
+      video.setAttribute('playsinline', '');
+      video.autoplay = true;
+      video.src = `${small ? video.dataset.srcSm : video.dataset.srcLg}.${ext}`;
       video.addEventListener('playing', () => video.classList.add('is-playing'), { once: true });
-      const start = () => video.play().catch(() => {});
+      // Autoplay can still be refused (iOS Low Power Mode, some in-app browsers).
+      // Retry on the visitor's first tap; until then the still poster stays in place.
+      const retry = () => video.play().catch(() => {});
+      const start = () => video.play().catch(() => {
+        addEventListener('touchend', retry, { once: true, passive: true });
+        addEventListener('click', retry, { once: true });
+      });
       if (document.readyState === 'complete') start(); else addEventListener('load', start, { once: true });
       // Pause when off-screen to save battery and bandwidth.
       new IntersectionObserver(([en]) => (en.isIntersecting ? start() : video.pause())).observe(video);
