@@ -1,0 +1,20 @@
+{
+  "name": "oceanica-lifestyle",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Corporate website for Oceanica Lifestyle Pvt. Ltd., Patna",
+  "type": "module",
+  "scripts": {
+    "assets": "node scripts/assets.mjs",
+    "build": "node scripts/build.mjs",
+    "build:strict": "node scripts/build.mjs --strict",
+    "dev": "node scripts/build.mjs && node scripts/serve.mjs",
+    "serve": "node scripts/serve.mjs"
+  },
+  "devDependencies": {
+    "@fontsource-variable/manrope": "^5.1.0",
+    "@fontsource/instrument-serif": "^5.1.0",
+    "ffmpeg-static": "^5.2.0",
+    "sharp": "^0.34.0"
+  }
+}
