@@ -38,7 +38,7 @@ Never add figures, project facts, RERA numbers, configurations, prices, dates or
 | Logo | `assets-source/brand/oceanica-wordmark.webp` | Transparent wordmark, used unmodified. |
 | Emblem / favicons | `assets-source/brand/oceanica-emblem.webp` | The circular seal is cropped for icons. A clean transparent file will give better icons. |
 | Editorial imagery | `assets-source/images/*` | Each file becomes `<name>-<width>.{avif,webp,jpg}`. |
-| Leadership portraits | `assets-source/leadership/<slug>.jpg` | Cropped to 4:5 with a muted grade. Slug must match `leadership.people[].slug`. Current portraits were cropped from website screenshots; supply originals for sharper results. Thakur Nirmal Kumar Singh's portrait is awaited (a monogram shows until then). |
+| Leadership portraits | `assets-source/leadership/<slug>.jpg` | Cropped to 4:5 with a muted grade. Slug must match `leadership.people[].slug`. The current portraits come from the existing website. Thakur Nirmal Kumar Singh has no photograph, so a monogram is shown; add `thakur-nirmal-kumar-singh.jpg` and set `portrait` in `content.mjs` to replace it. |
 | Project imagery | `assets-source/projects/<slug>.jpg` | Referenced as `projects-<slug>` in `content.mjs`. |
 
 Several section images are stills taken from the supplied hero film (`film-*`), so every photograph on the site is Oceanica-supplied material.
@@ -55,4 +55,4 @@ Set `FORM_ENDPOINT` in `src/config.mjs` (or as an environment variable at build 
 
 1. Run `npm run build:strict` (it fails if any content slot is pending).
 2. Confirm `SITE_URL` in `src/config.mjs` (canonical URLs, sitemap, Open Graph); it currently assumes `oceanica.co.in` from the company email.
-3. Configure the form endpoint.
+3. The enquiry form has no receiving address yet (`FORM_ENDPOINT` is empty by choice). Until one is set, submitting the form asks visitors to use the phone number or email shown beside it.
