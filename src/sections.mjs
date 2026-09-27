@@ -53,8 +53,8 @@ export function about({ full = false, num = '01' } = {}) {
       <figcaption>${esc(a.imageCaption)}</figcaption>
     </figure>
     <div class="about__body">
-      <h3 class="subhead reveal">${esc(a.sectionTitle)}</h3>
-      <div class="prose reveal">${paras(full ? a.intro : a.intro.slice(0, 1))}</div>
+      <h3 class="subhead reveal">${esc(full ? a.pageTitle : a.sectionTitle)}</h3>
+      <div class="prose reveal">${paras(full ? a.intro : a.intro.slice(0, a.homeParagraphs))}</div>
       ${full ? '' : `<div class="reveal">${linkCta('/about/', 'Explore Oceanica')}</div>`}
     </div>
   </div>
@@ -74,20 +74,20 @@ export function brandStatement() {
 
 // ── Vision & Mission ──────────────────────────────────────────────────────────
 export function visionMission({ num = '02' } = {}) {
-  const row = (d, img, alt, reverse) => `<div class="vm__row grid${reverse ? ' vm__row--reverse' : ''}">
+  const row = (d, img, alt, reverse, serif = false) => `<div class="vm__row grid${reverse ? ' vm__row--reverse' : ''}">
     <figure class="vm__figure frame reveal-img" data-parallax>
       ${pic(img, { alt, sizes: '(min-width: 1024px) 50vw, 100vw' })}
     </figure>
     <div class="vm__text">
       <p class="eyebrow reveal">${esc(d.label)}</p>
       <h3 class="display display--lg vm__title reveal">${esc(d.title)}</h3>
-      <div class="prose prose--lead reveal">${paras(d.body)}</div>
+      <div class="prose ${serif ? 'prose--serif' : 'prose--lead'} reveal">${paras(d.body)}</div>
     </div>
   </div>`;
   return `<section class="vm section section--parchment" id="vision" aria-label="Vision and Mission">
   <div class="wrap">
     ${label('Vision & Mission', num)}
-    ${row(C.vision, 'film-colonnade', 'A glass colonnade at golden hour framing bronze water walls', false)}
+    ${row(C.vision, 'film-colonnade', 'A glass colonnade at golden hour framing bronze water walls', false, true)}
     ${row(C.mission, 'film-water-wall', 'A bronze-framed water wall in a landscaped courtyard at sunset', true)}
   </div>
 </section>`;
@@ -102,7 +102,7 @@ export function values({ num = '03' } = {}) {
       <span class="values__num">${pad2(i + 1)}</span>
       <div>
         <h3 class="values__name">${esc(it.name)}</h3>
-        <div class="values__body">${paras(it.body)}</div>
+        ${it.body ? `<div class="values__body">${paras(it.body)}</div>` : ''}
       </div>
     </li>`).join('');
   return `<section class="values section" id="values" aria-label="Core values">

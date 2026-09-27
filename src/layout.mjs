@@ -10,7 +10,7 @@ const logo = (cls = '') => `<picture class="logo ${cls}">
 function head({ title, description, path, schema = [], preload = '' }) {
   const url = SITE_URL + path;
   const fullTitle = path === '/' ? `${company.legalName} — Building A Better Tomorrow` : `${title} — ${company.name}`;
-  const desc = description || `${company.legalName}, a real-estate development company based in ${company.city}.`;
+  const desc = description || company.description;
   const org = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
@@ -18,7 +18,8 @@ function head({ title, description, path, schema = [], preload = '' }) {
     alternateName: company.name,
     url: SITE_URL,
     logo: `${SITE_URL}/assets/brand/oceanica-wordmark-720.png`,
-    address: { '@type': 'PostalAddress', addressLocality: 'Patna', addressRegion: 'Bihar', addressCountry: 'IN' },
+    address: { '@type': 'PostalAddress', streetAddress: contact.addressParts.street, addressLocality: contact.addressParts.locality,
+      addressRegion: contact.addressParts.region, postalCode: contact.addressParts.postalCode, addressCountry: contact.addressParts.country },
     ...(plain(contact.email) && { email: plain(contact.email) }),
     ...(plain(contact.phone) && { telephone: plain(contact.phone) }),
   };
@@ -103,7 +104,7 @@ function footer() {
       <div class="footer__col footer__col--contact">
         <p class="footer__h">Contact</p>
         <ul class="footer__contact">
-          ${line('Office', contact.address)}
+          ${line('Address', contact.address)}
           ${line('Phone', contact.phone, contact.phoneHref && `tel:${contact.phoneHref}`)}
           ${line('Email', contact.email, contact.emailHref && `mailto:${contact.emailHref}`)}
         </ul>
@@ -116,18 +117,16 @@ function footer() {
         <div class="disclosure__body">${paras(legal.reraDisclaimer)}</div>
       </details>
       <details class="disclosure">
-        <summary><span>General Disclaimer</span>${plus}</summary>
+        <summary><span>Disclaimer</span>${plus}</summary>
         <div class="disclosure__body">${paras(legal.generalDisclaimer)}</div>
       </details>
     </div>
 
     <div class="footer__bottom">
-      <p>© ${year} ${esc(company.legalName)}. All rights reserved.</p>
-      <p class="footer__note">${t(legal.footerNote)}</p>
+      <p>All rights are reserved · Copyright © ${year} ${esc(company.legalName)}</p>
       <ul class="footer__links">
+        <li><a href="/legal/#rera">RERA Disclaimer</a></li>
         <li><a href="/legal/#disclaimer">Disclaimer</a></li>
-        <li><a href="/legal/#rera">RERA</a></li>
-        <li><a href="/legal/#privacy">Privacy</a></li>
       </ul>
     </div>
   </div>

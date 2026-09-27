@@ -107,16 +107,15 @@ export const pages = [
   },
   {
     path: '/legal/',
-    title: 'Legal & Disclaimers',
-    description: `Legal information, RERA disclaimer and privacy for ${C.company.legalName}.`,
+    title: 'RERA Disclaimer & Disclaimer',
+    description: `RERA disclaimer and website disclaimer of ${C.company.legalName}.`,
     body: () => `<div class="page-top"></div>
 <section class="section legal">
   <div class="wrap grid">
-    <div class="legal__head">${label('Legal')}${lines(['Disclaimers', '& policies.'], 'h1', 'display display--lg')}</div>
+    <div class="legal__head">${label('Legal')}${lines(['RERA &', 'Disclaimer.'], 'h1', 'display display--lg')}</div>
     <div class="legal__body">
       <section id="rera" aria-labelledby="h-rera"><h2 class="subhead" id="h-rera">RERA Disclaimer</h2><div class="prose">${paras(C.legal.reraDisclaimer)}</div></section>
-      <section id="disclaimer" aria-labelledby="h-disc"><h2 class="subhead" id="h-disc">General Disclaimer</h2><div class="prose">${paras(C.legal.generalDisclaimer)}</div></section>
-      <section id="privacy" aria-labelledby="h-priv"><h2 class="subhead" id="h-priv">Privacy</h2><div class="prose">${paras(C.legal.privacy)}</div></section>
+      <section id="disclaimer" aria-labelledby="h-disc"><h2 class="subhead" id="h-disc">Disclaimer</h2><div class="prose">${paras(C.legal.generalDisclaimer)}</div></section>
     </div>
   </div>
 </section>`,

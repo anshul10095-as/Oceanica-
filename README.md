@@ -53,6 +53,6 @@ Set `FORM_ENDPOINT` in `src/config.mjs` (or as an environment variable at build 
 
 ## Before launch
 
-1. Fill every item in `PENDING-CONTENT.md`, then run `npm run build:strict`.
-2. Confirm `SITE_URL` in `src/config.mjs` (canonical URLs, sitemap, Open Graph).
+1. Run `npm run build:strict` (it fails if any content slot is pending).
+2. Confirm `SITE_URL` in `src/config.mjs` (canonical URLs, sitemap, Open Graph); it currently assumes `oceanica.co.in` from the company email.
 3. Configure the form endpoint.

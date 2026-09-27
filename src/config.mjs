@@ -1,5 +1,6 @@
-// Deployment settings. Change SITE_URL to the production domain before launch.
-export const SITE_URL = process.env.SITE_URL || 'https://www.oceanicalifestyle.com';
+// Deployment settings. Confirm SITE_URL is the production domain before launch
+// (assumed from the company email domain, oceanica.co.in).
+export const SITE_URL = process.env.SITE_URL || 'https://www.oceanica.co.in';
 
 // POST endpoint for the enquiry form (e.g. a Formspree / Basin / serverless URL).
 // The form sends JSON: { name, email, mobile, subject, message, consent, page }.
