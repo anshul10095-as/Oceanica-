@@ -21,7 +21,7 @@ mkdirSync(`${DIST}/assets/fonts`, { recursive: true });
 const minCss = (s) => s.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\s+/g, ' ').replace(/\s*([{}:;,>])\s*/g, '$1').replace(/;}/g, '}').trim();
 // Prefix root-relative URLs when the site is served from a sub-path (GitHub Pages project sites).
 const withBase = (html) => BASE_PATH
-  ? html.replace(/\b(href|src|srcset|imagesrcset|data-src-lg|data-src-sm)="\/(?!\/)/g, (_, a) => `${a}="${BASE_PATH}/`)
+  ? html.replace(/\b(href|src|srcset|imagesrcset|poster)="\/(?!\/)/g, (_, a) => `${a}="${BASE_PATH}/`)
         .replace(/, \/assets\//g, () => `, ${BASE_PATH}/assets/`)
   : html;
 writeFileSync(`${DIST}/assets/css/main.css`, minCss(readFileSync('src/styles/main.css', 'utf8')).replaceAll("url('/", () => `url('${BASE_PATH}/`));

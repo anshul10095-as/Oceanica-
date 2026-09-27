@@ -9,9 +9,24 @@ export function hero() {
   const h = C.hero;
   return `<section class="hero" data-hero aria-label="Introduction">
   <div class="hero__media" aria-hidden="true">
+    <video class="hero__video" autoplay muted loop playsinline preload="auto" disablepictureinpicture
+      poster="/assets/img/hero-poster-1600.jpg" data-hero-video>
+      <source src="/assets/video/hero-720.mp4" type="video/mp4" media="(max-width: 900px)">
+      <source src="/assets/video/hero-1080.mp4" type="video/mp4">
+      <source src="/assets/video/hero-1080.webm" type="video/webm">
+    </video>
+    <script>
+      // Runs as soon as the video is parsed: honour Reduce Motion and data-saver before any download.
+      (function (v) {
+        var c = navigator.connection || {};
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches || c.saveData || /(^|-)2g$/.test(c.effectiveType || '')) {
+          v.autoplay = false; v.removeAttribute('autoplay'); v.preload = 'none';
+          while (v.firstElementChild) v.removeChild(v.firstElementChild);
+          v.load();
+        }
+      })(document.currentScript.previousElementSibling);
+    </script>
     ${pic('hero-poster', { eager: true, cls: 'hero__poster', sizes: '100vw' })}
-    <video class="hero__video" muted loop playsinline preload="none" disablepictureinpicture
-      data-hero-video data-src-lg="/assets/video/hero-1080" data-src-sm="/assets/video/hero-720"></video>
     <div class="hero__veil"></div>
   </div>
   <div class="hero__content wrap">
