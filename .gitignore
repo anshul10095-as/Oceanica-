@@ -1,0 +1,5 @@
+node_modules/
+dist/
+assets-source/video/
+assets-source/.stills/
+.DS_Store
