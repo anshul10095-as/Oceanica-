@@ -51,6 +51,14 @@ Add an object to `projects.items` in `src/content.mjs` and drop its render into 
 
 Set `FORM_ENDPOINT` in `src/config.mjs` (or as an environment variable at build time) to any service that accepts a JSON POST. Until then the form validates but directs visitors to phone and email.
 
+## Deployment (GitHub Pages)
+
+`.github/workflows/pages.yml` builds the site with `npm run build:strict` and deploys it on every push to `main`. It serves the site from the repository's sub-path (`https://<owner>.github.io/<repo>/`) by setting `BASE_PATH` and `SITE_URL` at build time.
+
+One-time setup: in the repository's **Settings → Pages**, set **Source** to **GitHub Actions**.
+
+To move to `oceanica.co.in` later, add the domain under Settings → Pages → Custom domain, point its DNS at GitHub Pages, and in the workflow set `BASE_PATH: ''` and `SITE_URL: https://www.oceanica.co.in`.
+
 ## Before launch
 
 1. Run `npm run build:strict` (it fails if any content slot is pending).

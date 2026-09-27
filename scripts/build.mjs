@@ -1,7 +1,7 @@
 // Static build: renders src/ into dist/. No runtime dependencies.
 import { cpSync, existsSync, mkdirSync, rmSync, writeFileSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
-import { SITE_URL } from '../src/config.mjs';
+import { SITE_URL, BASE_PATH } from '../src/config.mjs';
 import { PENDING, setPage } from '../src/lib.mjs';
 import { page } from '../src/layout.mjs';
 import { pages } from '../src/pages.mjs';
@@ -19,7 +19,12 @@ mkdirSync(`${DIST}/assets/css`, { recursive: true });
 mkdirSync(`${DIST}/assets/js`, { recursive: true });
 mkdirSync(`${DIST}/assets/fonts`, { recursive: true });
 const minCss = (s) => s.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\s+/g, ' ').replace(/\s*([{}:;,>])\s*/g, '$1').replace(/;}/g, '}').trim();
-writeFileSync(`${DIST}/assets/css/main.css`, minCss(readFileSync('src/styles/main.css', 'utf8')));
+// Prefix root-relative URLs when the site is served from a sub-path (GitHub Pages project sites).
+const withBase = (html) => BASE_PATH
+  ? html.replace(/\b(href|src|srcset|imagesrcset|data-src-lg|data-src-sm)="\/(?!\/)/g, (_, a) => `${a}="${BASE_PATH}/`)
+        .replace(/, \/assets\//g, () => `, ${BASE_PATH}/assets/`)
+  : html;
+writeFileSync(`${DIST}/assets/css/main.css`, minCss(readFileSync('src/styles/main.css', 'utf8')).replaceAll("url('/", () => `url('${BASE_PATH}/`));
 cpSync('src/scripts/main.js', `${DIST}/assets/js/main.js`);
 for (const [pkg, file] of [
   ['@fontsource/instrument-serif', 'instrument-serif-latin-400-normal.woff2'],
@@ -38,7 +43,7 @@ for (const p of pages) {
   if (p.noindex) html = html.replace('<meta charset="utf-8">', '<meta charset="utf-8">\n<meta name="robots" content="noindex">');
   const out = p.path.endsWith('.html') ? join(DIST, p.path) : join(DIST, p.path, 'index.html');
   mkdirSync(dirname(out), { recursive: true });
-  writeFileSync(out, html);
+  writeFileSync(out, withBase(html));
 }
 
 // Sitemap, robots, manifest.
@@ -50,9 +55,9 @@ ${pages.filter((p) => !p.noindex).map((p) => `  <url><loc>${SITE_URL}${p.path}</
 `);
 writeFileSync(`${DIST}/robots.txt`, `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}/sitemap.xml\n`);
 writeFileSync(`${DIST}/site.webmanifest`, JSON.stringify({
-  name: company.legalName, short_name: company.name, start_url: '/', display: 'standalone',
+  name: company.legalName, short_name: company.name, start_url: `${BASE_PATH}/`, display: 'standalone',
   background_color: '#061C29', theme_color: '#061C29',
-  icons: [{ src: '/icon-192.png', sizes: '192x192', type: 'image/png' }, { src: '/icon-512.png', sizes: '512x512', type: 'image/png' }],
+  icons: [{ src: `${BASE_PATH}/icon-192.png`, sizes: '192x192', type: 'image/png' }, { src: `${BASE_PATH}/icon-512.png`, sizes: '512x512', type: 'image/png' }],
 }, null, 2));
 
 // Pending-copy report.
