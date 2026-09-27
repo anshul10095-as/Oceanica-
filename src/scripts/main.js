@@ -45,36 +45,23 @@
     : null;
   revealables.forEach((el) => (io ? io.observe(el) : el.classList.add('is-in')));
 
-  /* ── Hero film: load only where it makes sense ── */
+  /* ── Hero film ──
+     The <video> autoplays from its own markup (the form iOS handles most reliably);
+     an inline script beside it already opted out for Reduce Motion / data-saver. */
   const video = $('[data-hero-video]');
-  if (video) {
-    const conn = navigator.connection || {};
-    const saveData = conn.saveData || /(^|-)2g$/.test(conn.effectiveType || '');
-    if (!reduceMotion && !saveData) {
-      const small = matchMedia('(max-width: 900px)').matches;
-      // H.264 MP4 plays in every mainstream browser, Safari and iOS included. WebM is
-      // only a fallback for builds without H.264: Safari often answers "maybe" for VP9
-      // WebM and then fails to play it, so it must never be the first choice.
-      const ext = video.canPlayType('video/mp4; codecs="avc1.640028"') ? 'mp4' : 'webm';
-      // iOS autoplays only videos that are muted and inline before a source is set.
-      video.muted = true;
-      video.defaultMuted = true;
-      video.playsInline = true;
-      video.setAttribute('muted', '');
-      video.setAttribute('playsinline', '');
-      video.autoplay = true;
-      video.src = `${small ? video.dataset.srcSm : video.dataset.srcLg}.${ext}`;
-      video.addEventListener('playing', () => video.classList.add('is-playing'), { once: true });
-      // Autoplay can still be refused (iOS Low Power Mode, some in-app browsers).
-      // Retry on the visitor's first tap; until then the still poster stays in place.
-      const retry = () => video.play().catch(() => {});
-      const start = () => video.play().catch(() => {
-        addEventListener('touchend', retry, { once: true, passive: true });
-        addEventListener('click', retry, { once: true });
-      });
-      if (document.readyState === 'complete') start(); else addEventListener('load', start, { once: true });
-      // Pause when off-screen to save battery and bandwidth.
-      new IntersectionObserver(([en]) => (en.isIntersecting ? start() : video.pause())).observe(video);
+  if (video && video.querySelector('source')) {
+    const hero = video.closest('.hero');
+    video.muted = true;
+    video.addEventListener('playing', () => hero.classList.add('is-playing'), { once: true });
+    const play = () => video.play().catch(() => {});
+    // Autoplay can be refused (iOS Low Power Mode, some in-app browsers): retry on first tap.
+    const retry = () => { if (video.paused) play(); };
+    addEventListener('touchend', retry, { once: true, passive: true });
+    addEventListener('click', retry, { once: true });
+    if (video.paused) play();
+    // Pause off-screen to save battery and bandwidth; resume when back in view.
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(([en]) => (en.isIntersecting ? play() : video.pause())).observe(video);
     }
   }
 
