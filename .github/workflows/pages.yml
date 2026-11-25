@@ -23,6 +23,9 @@ jobs:
         with:
           node-version: 22
           cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            rewear-campus/package-lock.json
       # Install scripts are skipped: the build needs only the font packages,
       # not the media tooling (sharp, ffmpeg) used by `npm run assets`.
       - run: npm ci --ignore-scripts
@@ -32,6 +35,13 @@ jobs:
           # and SITE_URL to the domain.
           BASE_PATH: /${{ github.event.repository.name }}
           SITE_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
+      # ReWear Campus PWA, served from the /rewear/ sub-path. It uses relative
+      # paths and hash routes, so it needs no base-path configuration.
+      - run: npm ci --ignore-scripts
+        working-directory: rewear-campus
+      - run: npm run build
+        working-directory: rewear-campus
+      - run: cp -R rewear-campus/dist dist/rewear
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
