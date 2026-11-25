@@ -1,0 +1,24 @@
+{
+  "name": "ReWear Campus",
+  "short_name": "ReWear",
+  "description": "Rent formal and ethnic wear on campus. Rent. Wear. Return. Repeat.",
+  "id": "./",
+  "start_url": "./#home",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#164B35",
+  "background_color": "#FAF8F2",
+  "lang": "en-IN",
+  "categories": ["shopping", "lifestyle"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Explore", "url": "./#explore" },
+    { "name": "My Rentals", "url": "./#wardrobe" },
+    { "name": "ReWear Pass", "url": "./#pass" }
+  ]
+}
