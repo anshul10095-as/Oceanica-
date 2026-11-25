@@ -2,7 +2,7 @@ import type { AppState, Booking, BookingStatus, CleaningRecord, InventoryUnit, P
 import { buildCatalogue, unitsPerSize } from './catalogue';
 import { addDays, todayISO } from '../lib/util';
 
-export const STATE_VERSION = 4;
+export const STATE_VERSION = 5;
 
 export const PLANS: Plan[] = [
   { id: 'basic', name: 'Campus Basic', price: 499, credits: 1, discount: 0, premiumAccess: false, priority: false,
