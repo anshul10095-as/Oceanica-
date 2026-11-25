@@ -2,7 +2,8 @@ import { useMemo, useState } from 'react';
 import { ArrowRight, BadgeIndianRupee, MapPin, Sparkles, Recycle, Search, CalendarDays, Store, RotateCcw, ChevronDown, Check } from 'lucide-react';
 import { useStore } from '../store/store';
 import { GarmentArt } from '../components/GarmentArt';
-import { ProductCard } from '../components/Product';
+import { PhotoImg, ProductCard } from '../components/Product';
+import { photoFor } from '../data/photos';
 import { Badge, LinkButton, SectionHead, DemoNote } from '../components/ui';
 import { OCCASIONS, STYLES } from '../data/catalogue';
 import { fmtShort, inr, cx } from '../lib/util';
@@ -17,6 +18,15 @@ const OCC_ART: Record<Occasion, { kind: ArtKind; c: string; a?: string; bg: stri
   farewell: { kind: 'saree', c: '#e7bfbd', a: '#c9a45f', bg: '#E9DCDA', k2: 'blazer', c2: '#1b1d1c', a2: '#f4f2ec' },
   weddings: { kind: 'lehenga', c: '#b72d63', a: '#d8b469', bg: '#E8D7DA', k2: 'sherwani', c2: '#e9dfc6', a2: '#b8914a' },
 };
+
+const OCC_PHOTO: Record<Occasion, string> = { placements: 'rw-mf-09', presentations: 'rw-wf-03', fests: 'rw-we-07', 'ethnic-day': 'rw-me-03', farewell: 'rw-we-01', weddings: 'hero-wedding' };
+const STYLE_PHOTO: Record<string, string> = { 'men-formal': 'rw-mf-03', 'women-formal': 'rw-wf-04', 'men-ethnic': 'rw-me-06', 'women-ethnic': 'rw-we-02', sets: 'rw-wf-07' };
+
+function HeroPhoto({ id, position, alt }: { id: string; position: string; alt: string }) {
+  const p = photoFor(id);
+  if (!p) return null;
+  return <div className="absolute inset-0 transition duration-700 group-hover:scale-[1.03]"><PhotoImg photo={p} sizes="(min-width: 1024px) 30vw, 60vw" position={position} alt={alt} eager /></div>;
+}
 
 function Hero() {
   return (
@@ -36,21 +46,25 @@ function Hero() {
         </div>
         <div className="relative">
           {/* The campus rack: three garments on a brass rail, the brand's physical pop-up in miniature. */}
-          <div className="relative rounded-[24px] overflow-hidden bg-forest aspect-[5/4] lg:aspect-[6/5]">
-            <div className="absolute inset-0 paper opacity-60" />
-            <div className="absolute inset-x-[6%] top-[11%] h-[6px] rounded-full bg-gradient-to-b from-[#e7cf98] to-[#a98a4c] shadow" />
-            <div className="absolute inset-x-[6%] top-[9%] bottom-[14%] grid grid-cols-3 gap-0">
-              <GarmentArt kind="interview-set" color="#1f2f4d" accent="#f1f0eb" backdrop={false} className="w-full h-full origin-top scale-[1.32]" title="Navy interview outfit" />
-              <GarmentArt kind="anarkali" color="#1d5c49" accent="#d3b06c" backdrop={false} className="w-full h-full origin-top scale-[1.32]" title="Emerald Anarkali" />
-              <GarmentArt kind="kurta-embroidered" color="#efe8d8" accent="#b8914a" backdrop={false} className="w-full h-full origin-top scale-[1.32]" title="Ivory festive kurta" />
-            </div>
-            <div className="absolute left-4 bottom-4 right-4 flex flex-wrap gap-2">
-              <span className="rounded-full bg-ivory/95 text-forest-deep px-3 py-1.5 text-[12px] font-bold">Blazers from ₹399</span>
-              <span className="rounded-full bg-ivory/95 text-forest-deep px-3 py-1.5 text-[12px] font-bold">Anarkalis from ₹599</span>
-              <span className="rounded-full bg-gold text-forest-deep px-3 py-1.5 text-[12px] font-bold">Kurta sets from ₹399</span>
+          {/* Editorial pairing: one ethnic look, one formal look, from the two halves of the collection. */}
+          <div className="grid grid-cols-[1.25fr_1fr] gap-3 aspect-[5/4] lg:aspect-[6/5]">
+            <a href="#ethnic" className="relative rounded-[24px] overflow-hidden bg-forest group">
+              <HeroPhoto id="hero-lehenga" position="50% 30%" alt="Three women in embroidered lehengas" />
+              <span className="absolute left-3 top-3 rounded-full bg-ivory/95 text-forest-deep px-3 py-1.5 text-[12px] font-bold">Lehengas from ₹699</span>
+            </a>
+            <div className="grid grid-rows-[1.35fr_1fr] gap-3">
+              <a href="#formal" className="relative rounded-[24px] overflow-hidden bg-forest-deep group">
+                <HeroPhoto id="hero-suit" position="50% 20%" alt="Man in a dark suit in an office" />
+                <span className="absolute left-3 bottom-3 rounded-full bg-ivory/95 text-forest-deep px-3 py-1.5 text-[12px] font-bold">Blazers from ₹399</span>
+              </a>
+              <div className="rounded-[24px] bg-forest text-ivory p-4 lg:p-5 flex flex-col justify-between">
+                <span className="eyebrow text-gold">Pilot rack</span>
+                <span className="font-serif text-[22px] lg:text-[30px] leading-[1.05] font-semibold">32 looks.<br />One campus.</span>
+                <span className="text-[12px] text-ivory/70">Formal and ethnic, cleaned between every wear.</span>
+              </div>
             </div>
           </div>
-          <div className="hidden lg:flex absolute -left-8 bottom-24 bg-surface rounded-2xl shadow-lift p-4 gap-3 items-center w-[260px] border border-line">
+          <div className="hidden lg:flex absolute -left-8 bottom-10 bg-surface rounded-2xl shadow-lift p-4 gap-3 items-center w-[260px] border border-line">
             <span className="h-11 w-11 rounded-full bg-tint grid place-items-center text-brand"><BadgeIndianRupee size={20} /></span>
             <span className="text-[13px] leading-snug"><b className="block text-[15px]">Save {inr(2101)}</b>renting a ₹2,500 blazer for one interview</span>
           </div>
@@ -90,9 +104,10 @@ function Occasions() {
           const a = OCC_ART[o.id];
           return (
             <a key={o.id} href={`#occasion-${o.id}`} className={cx('group relative rounded-2xl overflow-hidden flex flex-col justify-end', i === 0 ? 'col-span-2 lg:col-span-1 aspect-[16/11] lg:aspect-[4/3]' : 'aspect-[4/5] lg:aspect-[4/3]')} style={{ background: a.bg }}>
-              <div className="absolute inset-0 flex items-end justify-center gap-0 pt-4 transition duration-500 group-hover:scale-[1.04]">
-                {a.k2 && <GarmentArt kind={a.k2} color={a.c2!} accent={a.a2} backdrop={false} className="h-[86%] w-auto -mr-[12%] opacity-95" />}
-                <GarmentArt kind={a.kind} color={a.c} accent={a.a} backdrop={false} className="h-[92%] w-auto" />
+              <div className="absolute inset-0 transition duration-700 group-hover:scale-[1.04]">
+                {photoFor(OCC_PHOTO[o.id]) ? <PhotoImg photo={photoFor(OCC_PHOTO[o.id])!} sizes="(min-width: 1024px) 33vw, 50vw" position="50% 25%" alt="" /> : (
+                  <div className="absolute inset-0 flex items-end justify-center">{a.k2 && <GarmentArt kind={a.k2} color={a.c2!} accent={a.a2} backdrop={false} className="h-[86%] w-auto -mr-[12%]" />}<GarmentArt kind={a.kind} color={a.c} accent={a.a} backdrop={false} className="h-[92%] w-auto" /></div>
+                )}
               </div>
               <div className="relative p-4 lg:p-5 bg-gradient-to-t from-[#0f1b15]/80 via-[#0f1b15]/35 to-transparent text-ivory">
                 <h3 className="font-serif text-[22px] lg:text-[28px] font-semibold leading-tight">{o.label}</h3>
@@ -117,7 +132,7 @@ function Styles() {
             const [k, c, a] = art[s.id];
             return (
               <a key={s.id} href={`#style-${s.id}`} className="snap-start-m shrink-0 w-[42vw] sm:w-[30vw] lg:w-auto group">
-                <div className="rounded-2xl overflow-hidden aspect-[3/4] bg-tint"><GarmentArt kind={k} color={c} accent={a} seed={s.id} className="w-full h-full transition duration-500 group-hover:scale-[1.04]" /></div>
+                <div className="rounded-2xl overflow-hidden aspect-[3/4] bg-tint"><div className="w-full h-full transition duration-700 group-hover:scale-[1.04]">{photoFor(STYLE_PHOTO[s.id]) ? <PhotoImg photo={photoFor(STYLE_PHOTO[s.id])!} sizes="(min-width: 1024px) 20vw, 42vw" alt="" fallback={<GarmentArt kind={k} color={c} accent={a} seed={s.id} className="w-full h-full" />} /> : <GarmentArt kind={k} color={c} accent={a} seed={s.id} className="w-full h-full" />}</div></div>
                 <p className="mt-2.5 font-semibold text-[14px] flex items-center justify-between">{s.label}<ArrowRight size={15} className="text-muted group-hover:text-brand group-hover:translate-x-0.5 transition" /></p>
               </a>
             );

@@ -6,6 +6,8 @@ import { Button, Chip, DemoNote, Field, LinkButton, Modal, SectionHead, useToast
 import { FAQ } from './Home';
 import { usePWA } from '../lib/pwa';
 import { cx } from '../lib/util';
+import { allPhotos, authorUrl, photoPage, unsplashUrl } from '../data/photos';
+import { PhotoImg } from '../components/Product';
 
 // ---------------- Feedback ----------------
 const Q = {
@@ -214,6 +216,26 @@ export function HelpPage() {
       <SectionHead className="mt-12" eyebrow="FAQ" title="Common questions" />
       <FAQ />
       <div className="mt-8 flex flex-wrap gap-3"><LinkButton href="#policy-rental" variant="secondary">Rental policy</LinkButton><LinkButton href="#policy-cancellation" variant="secondary">Cancellation policy</LinkButton><LinkButton href="#feedback" variant="ghost">Share feedback</LinkButton></div>
+    </div>
+  );
+}
+
+// ---------------- Photo credits ----------------
+export function CreditsPage() {
+  const { state } = useStore();
+  const label = (key: string) => state.products.find((p) => p.id === key)?.name ?? ({ 'hero-lehenga': 'Homepage: ethnic look', 'hero-suit': 'Homepage: formal look', 'hero-wedding': 'Weddings & Celebrations' } as Record<string, string>)[key] ?? key;
+  return (
+    <div className="gutter max-w-[1100px] mx-auto pt-8 lg:pt-12">
+      <h1 className="font-serif text-[40px] lg:text-[56px] font-semibold leading-none">Photo credits</h1>
+      <p className="text-muted mt-3 max-w-[62ch]">Photographs are by independent photographers on <a href={unsplashUrl} target="_blank" rel="noreferrer" className="underline">Unsplash</a>, used under the Unsplash License. They show the style of each garment; the pilot rack's own stock will be photographed before launch. The people pictured are not affiliated with ReWear Campus.</p>
+      <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-8">
+        {allPhotos().map(([key, ph]) => (
+          <li key={key} className="flex gap-3 rounded-xl border border-line bg-surface p-3">
+            <span className="h-20 w-16 rounded-lg overflow-hidden shrink-0"><PhotoImg photo={ph} sizes="64px" alt="" /></span>
+            <span className="text-[13px] min-w-0"><b className="block truncate">{label(key)}</b><a href={authorUrl(ph)} target="_blank" rel="noreferrer" className="underline">{ph.author}</a><span className="block text-muted tnum">{ph.w} × {ph.h} · <a href={photoPage(ph)} target="_blank" rel="noreferrer" className="underline">original</a></span></span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

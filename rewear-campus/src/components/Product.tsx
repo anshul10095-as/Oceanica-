@@ -6,14 +6,53 @@ import { useStore } from '../store/store';
 import { availabilityLabel } from '../store/rules';
 import { cx, inr } from '../lib/util';
 import { useToast } from './ui';
+import { authorUrl, photoFor, photoSrc, photoSrcSet, unsplashUrl, type Photo } from '../data/photos';
 
-/** Photograph when one is supplied and loads; otherwise the studio rendering. Broken URLs fall back silently. */
-export function ProductImage({ p, view = 'front', className }: { p: Product; view?: 'front' | 'detail' | 'swatch'; className?: string }) {
+/** Responsive photograph with a placeholder colour while loading; renders `fallback` if the image fails. */
+export function PhotoImg({ photo, sizes, className, alt, position = '50% 25%', zoom, eager, fallback }: { photo: Photo; sizes: string; className?: string; alt?: string; position?: string; zoom?: number; eager?: boolean; fallback?: React.ReactNode }) {
   const [broken, setBroken] = useState(false);
-  if (p.imageUrl && !broken && view === 'front') {
-    return <img src={p.imageUrl} alt={p.name} loading="lazy" onError={() => setBroken(true)} className={cx('object-cover w-full h-full', className)} />;
+  const [loaded, setLoaded] = useState(false);
+  if (broken) return <>{fallback ?? null}</>;
+  return (
+    <img
+      src={photoSrc(photo, 1200)}
+      srcSet={photoSrcSet(photo)}
+      sizes={sizes}
+      alt={alt ?? photo.alt}
+      loading={eager ? 'eager' : 'lazy'}
+      decoding="async"
+      onLoad={() => setLoaded(true)}
+      onError={() => setBroken(true)}
+      className={cx('w-full h-full object-cover transition-opacity duration-500', loaded ? 'opacity-100' : 'opacity-0', className)}
+      style={{ objectPosition: position, background: photo.color ?? undefined, transform: zoom ? `scale(${zoom})` : undefined, transformOrigin: position }}
+    />
+  );
+}
+
+/** A custom photo URL if an admin set one, else the Unsplash photograph, else the studio rendering. */
+export function ProductImage({ p, view = 'front', className, sizes = '(min-width: 1024px) 25vw, 50vw', eager }: { p: Product; view?: 'front' | 'detail' | 'swatch'; className?: string; sizes?: string; eager?: boolean }) {
+  const [broken, setBroken] = useState(false);
+  const art = <GarmentArt kind={p.art} color={p.hex} accent={p.accent} seed={p.id} view={view} title={`${p.name} in ${p.color}`} className={cx('w-full h-full block', className)} />;
+  if (view === 'swatch') return art;
+  if (p.imageUrl && !broken) {
+    return <img src={p.imageUrl} alt={p.name} loading="lazy" onError={() => setBroken(true)} className={cx('object-cover w-full h-full', className)} style={view === 'detail' ? { transform: 'scale(1.9)', transformOrigin: '50% 35%' } : undefined} />;
   }
-  return <GarmentArt kind={p.art} color={p.hex} accent={p.accent} seed={p.id} view={view} title={`${p.name} in ${p.color}`} className={cx('w-full h-full block', className)} />;
+  const photo = photoFor(p.id);
+  if (photo) {
+    return (
+      <div className="relative w-full h-full overflow-hidden" style={{ background: photo.color ?? undefined }}>
+        <PhotoImg photo={photo} sizes={sizes} alt={`${p.name}, ${p.color}`} className={className} eager={eager} zoom={view === 'detail' ? 1.9 : undefined} position={view === 'detail' ? '50% 38%' : '50% 22%'} fallback={<GarmentArt kind={p.art} color={p.hex} accent={p.accent} seed={p.id} view={view} className="w-full h-full block" />} />
+      </div>
+    );
+  }
+  return art;
+}
+
+/** Photographer credit, as the Unsplash guidelines ask. */
+export function PhotoCredit({ id, className }: { id: string; className?: string }) {
+  const photo = photoFor(id);
+  if (!photo) return null;
+  return <p className={cx('text-[11px] text-muted', className)}>Photo by <a href={authorUrl(photo)} target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-fg">{photo.author}</a> on <a href={unsplashUrl} target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-fg">Unsplash</a></p>;
 }
 
 export function WishButton({ id, className }: { id: string; className?: string }) {

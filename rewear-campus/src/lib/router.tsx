@@ -4,7 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useState, type React
 // sandboxed previews as well as static hosting without server rewrites.
 export interface Route { page: string; arg: string }
 
-const PAGES = ['home', 'explore', 'formal', 'ethnic', 'occasion', 'style', 'product', 'fit', 'pass', 'popups', 'popup', 'bag', 'checkout', 'confirmation', 'wardrobe', 'wishlist', 'profile', 'sustainability', 'story', 'feedback', 'policy', 'help', 'admin', 'search', 'demo'];
+const PAGES = ['home', 'explore', 'formal', 'ethnic', 'occasion', 'style', 'product', 'fit', 'pass', 'popups', 'popup', 'bag', 'checkout', 'confirmation', 'wardrobe', 'wishlist', 'profile', 'sustainability', 'story', 'feedback', 'policy', 'help', 'admin', 'search', 'demo', 'credits'];
 
 export function parse(hash: string): Route {
   const h = decodeURIComponent(hash.replace(/^#/, '')).trim();

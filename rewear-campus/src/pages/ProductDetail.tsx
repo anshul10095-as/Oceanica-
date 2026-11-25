@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Heart, Ruler, ShieldCheck, Sparkles, MapPin, CalendarCheck, Shirt, Ticket, ArrowLeft, PackageX } from 'lucide-react';
 import { useStore } from '../store/store';
 import { useRouter } from '../lib/router';
-import { ProductCard, ProductImage } from '../components/Product';
+import { PhotoCredit, ProductCard, ProductImage } from '../components/Product';
 import { RentalCalendar } from '../components/Calendar';
 import { Badge, Button, Empty, LinkButton, Modal, useToast } from '../components/ui';
 import { activeSubscription, creditEligible, creditsLeft, findUnit, planOf, REASON_TEXT } from '../store/rules';
@@ -12,7 +12,7 @@ import type { Product } from '../data/types';
 
 function Gallery({ p }: { p: Product }) {
   const views = ['front', 'detail', 'swatch'] as const;
-  const labels = ['Front', 'Detail', 'Fabric'];
+  const labels = ['Look', 'Detail', 'Fabric colour'];
   const [i, setI] = useState(0);
   const strip = useRef<HTMLDivElement>(null);
   const onScroll = () => { const el = strip.current; if (el) setI(Math.round(el.scrollLeft / el.clientWidth)); };
@@ -21,17 +21,18 @@ function Gallery({ p }: { p: Product }) {
     <div className="lg:grid lg:grid-cols-[84px_1fr] lg:gap-4">
       <div className="hidden lg:flex flex-col gap-3">
         {views.map((v, k) => (
-          <button key={v} onClick={() => goTo(k)} aria-label={`Show ${labels[k]} view`} aria-pressed={i === k} className={cx('rounded-lg overflow-hidden aspect-[3/4] border-2 transition', i === k ? 'border-brand' : 'border-transparent opacity-70 hover:opacity-100')}><ProductImage p={p} view={v} /></button>
+          <button key={v} onClick={() => goTo(k)} aria-label={`Show ${labels[k]} view`} aria-pressed={i === k} className={cx('rounded-lg overflow-hidden aspect-[3/4] border-2 transition', i === k ? 'border-brand' : 'border-transparent opacity-70 hover:opacity-100')}><ProductImage p={p} view={v} sizes="84px" /></button>
         ))}
       </div>
       <div className="relative -mx-4 lg:mx-0">
         <div ref={strip} onScroll={onScroll} className="flex overflow-x-auto snap-x-m no-scrollbar lg:rounded-2xl" aria-roledescription="carousel" aria-label={`${p.name} images`}>
           {views.map((v, k) => (
-            <div key={v} className="snap-start-m shrink-0 w-full aspect-[4/5] lg:aspect-[5/6] bg-tint" aria-label={`${labels[k]} view`} role="group"><ProductImage p={p} view={v} /></div>
+            <div key={v} className="snap-start-m shrink-0 w-full aspect-[4/5] lg:aspect-[5/6] bg-tint" aria-label={`${labels[k]} view`} role="group"><ProductImage p={p} view={v} sizes="(min-width: 1024px) 50vw, 100vw" eager={k === 0} /></div>
           ))}
         </div>
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 lg:hidden">{views.map((v, k) => <button key={v} onClick={() => goTo(k)} aria-label={`Image ${k + 1}`} className={cx('h-1.5 rounded-full transition-all', i === k ? 'w-6 bg-ink' : 'w-1.5 bg-ink/30')} />)}</div>
         <span className="absolute left-4 lg:left-3 top-3 rounded-full bg-white/85 text-ink text-[11px] font-bold px-2.5 py-1">{labels[i]}</span>
+        {!p.imageUrl && <PhotoCredit id={p.id} className="mt-2 px-4 lg:px-0" />}
       </div>
     </div>
   );

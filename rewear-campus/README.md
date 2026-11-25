@@ -72,7 +72,7 @@ public/        manifest.webmanifest, sw.js, offline.html, icons/
 
 * **No backend.** Data lives in one browser's `localStorage`. A real pilot needs a server database, authentication and concurrency control so two students cannot take the last unit at the same moment.
 * **Simulated payments.** UPI, card and pay-at-pickup only record entries. A payment gateway (and refunds through it) is required before launch.
-* **Product imagery.** Garments are shown as consistent studio-style renderings drawn in SVG because no licensed photography was available. Each garment accepts a photo URL in Admin → Inventory; real photography of the actual pilot stock should replace them.
+* **Product imagery.** Product and editorial photos come from Unsplash (Unsplash License), hotlinked from Unsplash's image CDN as the API guidelines require, with photographer credits on each product page and at `#credits`. They show the style of each garment, not the pilot rack's own stock, which should be photographed before launch. Responsive `srcset` serves up to 3840px where the original is that large. If an image cannot load (offline, or a sandbox that blocks external images), the SVG rendering is shown instead. Admins can override any photo with their own URL in Admin → Inventory. Photo data lives in `src/data/photos.json`.
 * **Find My Fit** is rules-based matching on the live catalogue, not an AI model.
 * Demo analytics mix seeded records with session transactions; every view can be switched to session-only.
 * Policies are drafts and need legal review; campus locations need approval.

@@ -1,7 +1,7 @@
 // ReWear Campus service worker.
 // Caches the application shell and static assets only. Booking data lives in the page's
 // local storage and is never written to this cache. Navigations fall back to offline.html.
-const VERSION = 'rewear-v1';
+const VERSION = 'rewear-v2';
 const SHELL = ['./', './index.html', './offline.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png'];
 
 self.addEventListener('install', (e) => {
@@ -22,8 +22,8 @@ self.addEventListener('fetch', (e) => {
       .catch(() => caches.match('./index.html').then((r) => r || caches.match('./offline.html'))));
     return;
   }
-  // Same-origin hashed assets and Google Fonts: cache first, then network.
-  const cacheable = url.origin === self.location.origin || url.host === 'fonts.googleapis.com' || url.host === 'fonts.gstatic.com';
+  // Same-origin hashed assets, Google Fonts and viewed product photos: cache first, then network.
+  const cacheable = url.origin === self.location.origin || url.host === 'fonts.googleapis.com' || url.host === 'fonts.gstatic.com' || url.host === 'images.unsplash.com';
   if (!cacheable) return;
   e.respondWith(caches.match(req).then((hit) => hit || fetch(req).then((res) => {
     if (res.ok && (res.type === 'basic' || res.type === 'cors')) { const copy = res.clone(); caches.open(VERSION).then((c) => c.put(req, copy)); }

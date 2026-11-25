@@ -13,7 +13,7 @@ import Wardrobe, { WishlistPage } from './pages/Wardrobe';
 import FindMyFit from './pages/FindMyFit';
 import Sustainability from './pages/Sustainability';
 import Story from './pages/Story';
-import { FeedbackPage, ProfilePage, DemoPage, PolicyPage, HelpPage } from './pages/Misc';
+import { FeedbackPage, ProfilePage, DemoPage, PolicyPage, HelpPage, CreditsPage } from './pages/Misc';
 
 // The admin portal (and its charting library) loads on demand in the deployed build.
 const AdminShell = lazy(() => import('./pages/admin/AdminShell'));
@@ -39,6 +39,7 @@ function Page() {
     case 'demo': return <DemoPage />;
     case 'policy': return <PolicyPage />;
     case 'help': return <HelpPage />;
+    case 'credits': return <CreditsPage />;
     default: return <Home />;
   }
 }

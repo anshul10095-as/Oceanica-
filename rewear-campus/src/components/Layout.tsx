@@ -151,7 +151,7 @@ export function Footer() {
   const cols = [
     { h: 'ReWear', l: [['About Us', 'story'], ['Our Story', 'story'], ['Sustainability', 'sustainability'], ['Campus Pop-Ups', 'popups'], ['Share feedback', 'feedback']] },
     { h: 'Policies', l: [['Rental Policy', 'policy-rental'], ['Subscription Policy', 'policy-subscription'], ['Cancellation Policy', 'policy-cancellation'], ['Privacy Policy', 'policy-privacy']] },
-    { h: 'Support', l: [['Help Centre', 'help'], ['Contact', 'help'], ['Find My Fit', 'fit'], ['Demo mode', 'demo'], ['Demo Admin', 'admin']] },
+    { h: 'Support', l: [['Help Centre', 'help'], ['Contact', 'help'], ['Find My Fit', 'fit'], ['Demo mode', 'demo'], ['Demo Admin', 'admin'], ['Photo credits', 'credits']] },
   ];
   return (
     <footer className="bg-forest-deep text-ivory mt-20 pb-[calc(80px+env(safe-area-inset-bottom,0px))] lg:pb-0">
